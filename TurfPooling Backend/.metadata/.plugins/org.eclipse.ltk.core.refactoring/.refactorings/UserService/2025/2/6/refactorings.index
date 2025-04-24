@@ -1,0 +1,48 @@
+1738860315854	Rename type 'ResourceNotFoundException'
+1738861857898	Rename compilation unit 'UserService.java'
+1738861892891	Rename type 'UserServi'
+1738865401010	Rename type 'Admin'
+1738865414805	Rename type 'Customer'
+1738865422433	Rename type 'TurfOwner'
+1738866686922	Rename type 'UserController'
+1738866892179	Infer generic type arguments
+1738868293980	Delete elements
+1738868302697	Delete elements
+1738868315435	Delete elements
+1738868327062	Delete elements
+1738868335097	Delete elements
+1738871167557	Delete element
+1738920864994	Rename type 'User'
+1738921028746	Delete element
+1738921364305	Delete elements
+1738921742798	Delete element
+1738921838515	Delete element
+1738921889332	Delete element
+1738921892090	Delete element
+1738923302946	Delete element
+1738937748450	Rename type 'CustomerController'
+1738937952895	Rename type 'CustomerServiceImpl'
+1738937966219	Rename type 'CustomerService'
+1738938024410	Delete elements
+1738938148881	Delete elements
+1738938696662	Delete element
+1738944304887	Copy package
+1738944311897	Delete element
+1738993488192	Rename type 'User'
+1738999020540	Rename type 'TurfOwnerRespsitory'
+1739009732012	Delete element
+1739026697039	Delete element
+1739026755882	Copy package
+1739026763755	Copy package
+1739026772405	Copy package
+1739026790371	Rename package 'com.cts.userservice.dto.controller'
+1739026999460	Rename type 'TurfOwnerCOntroller'
+1739027117264	Copy package
+1739027135844	Delete element
+1739027251970	Rename type 'UserNotFound'
+1739027657112	Copy package
+1739027684090	Delete element
+1739027691028	Delete element
+1739027711445	Rename type 'CusotmerDTO'
+1739036877463	Copy package
+1739036966797	Copy compilation units
