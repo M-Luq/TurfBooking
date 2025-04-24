@@ -1,0 +1,124 @@
+<div class="owner-details-container">
+  <h2>Owner Details</h2>
+
+  @if (backendErrors.length > 0) {
+    <div class="error-messages">
+      @for (error of backendErrors; track error) {
+        <p>{{ error }}</p>
+      }
+    </div>
+  }
+
+  <form #ownerForm="ngForm" (ngSubmit)="onSubmit(ownerForm)">
+    <div class="form-group">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" [(ngModel)]="owner.name" required minlength="5">
+      @if (ownerForm.controls && ownerForm.controls['name'] && ownerForm.controls['name'].invalid && (ownerForm.controls['name'].dirty || ownerForm.controls['name'].touched)) {
+        <div class="error-message text-danger">
+          @if (ownerForm.controls['name'].errors && ownerForm.controls['name'].errors.hasOwnProperty('required')) {
+            Name is required.
+          }
+          @if (ownerForm.controls['name'].errors && ownerForm.controls['name'].errors.hasOwnProperty('minlength')) {
+            Name must be at least 5 characters.
+          }
+        </div>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="phoneNumber">Phone Number:</label>
+      <input type="text" id="phoneNumber" name="phoneNumber" [(ngModel)]="owner.phoneNumber" required minlength="10" maxlength="10" pattern="[0-9]*">
+      @if (ownerForm.controls && ownerForm.controls['phoneNumber'] && ownerForm.controls['phoneNumber'].invalid && (ownerForm.controls['phoneNumber'].dirty || ownerForm.controls['phoneNumber'].touched)) {
+        <div class="error-message text-danger">
+          @if (ownerForm.controls['phoneNumber'].errors && ownerForm.controls['phoneNumber'].errors.hasOwnProperty('required')) {
+            Phone number is required.
+          }
+          @if (ownerForm.controls['phoneNumber'].errors && ownerForm.controls['phoneNumber'].errors.hasOwnProperty('minlength')) {
+            Phone number must be 10 digits.
+          }
+          @if (ownerForm.controls['phoneNumber'].errors && ownerForm.controls['phoneNumber'].errors.hasOwnProperty('maxlength')) {
+            Phone number must be 10 digits.
+          }
+          @if (ownerForm.controls['phoneNumber'].errors && ownerForm.controls['phoneNumber'].errors.hasOwnProperty('pattern')) {
+            Phone number must contain only digits.
+          }
+        </div>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="address">Address:</label>
+      <input type="text" id="address" name="address" [(ngModel)]="owner.address" required minlength="5">
+      @if (ownerForm.controls && ownerForm.controls['address'] && ownerForm.controls['address'].invalid && (ownerForm.controls['address'].dirty || ownerForm.controls['address'].touched)) {
+        <div class="error-message text-danger">
+          @if (ownerForm.controls['address'].errors && ownerForm.controls['address'].errors.hasOwnProperty('required')) {
+            Address is required.
+          }
+          @if (ownerForm.controls['address'].errors && ownerForm.controls['address'].errors.hasOwnProperty('minlength')) {
+            Address must be at least 5 characters.
+          }
+        </div>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="businessContact">Business Contact:</label>
+      <input
+        type="text"
+        id="businessContact"
+        name="businessContact"
+        [(ngModel)]="owner.businessContact"
+        minlength="10"
+        maxlength="10"
+        pattern="[0-9]*"
+      />
+      @if (ownerForm.controls && ownerForm.controls['businessContact'] && ownerForm.controls['businessContact'].invalid && (ownerForm.controls['businessContact'].dirty || ownerForm.controls['businessContact'].touched)) {
+        <div class="error-message text-danger">
+          @if (ownerForm.controls['businessContact'].errors && ownerForm.controls['businessContact'].errors.hasOwnProperty('minlength')) {
+            Business contact must be 10 digits.
+          }
+          @if (ownerForm.controls['businessContact'].errors && ownerForm.controls['businessContact'].errors.hasOwnProperty('maxlength')) {
+            Business contact must be 10 digits.
+          }
+          @if (ownerForm.controls['businessContact'].errors && ownerForm.controls['businessContact'].errors.hasOwnProperty('pattern')) {
+            Business contact must contain only digits.
+          }
+        </div>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="businessAddress">Business Address:</label>
+      <input type="text" id="businessAddress" name="businessAddress" [(ngModel)]="owner.businessAddress" minlength="5">
+      @if (ownerForm.controls && ownerForm.controls['businessAddress'] && ownerForm.controls['businessAddress'].invalid && (ownerForm.controls['businessAddress'].dirty || ownerForm.controls['businessAddress'].touched)) {
+        <div class="error-message text-danger">
+          @if (ownerForm.controls['businessAddress'].errors && ownerForm.controls['businessAddress'].errors.hasOwnProperty('minlength')) {
+            Business address must be at least 5 characters.
+          }
+        </div>
+      }
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" [(ngModel)]="owner.email" pattern=".+@gmail\.com$">
+      @if (ownerForm.controls && ownerForm.controls['email'] && ownerForm.controls['email'].invalid && (ownerForm.controls['email'].dirty || ownerForm.controls['email'].touched)) {
+        <div class="error-message text-danger">
+          @if (ownerForm.controls['email'].errors && ownerForm.controls['email'].errors.hasOwnProperty('email')) {
+            Invalid email format.
+          }
+          @if (ownerForm.controls['email'].errors && ownerForm.controls['email'].errors.hasOwnProperty('pattern')) {
+            Email must be a gmail.com address.
+          }
+        </div>
+      }
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" [disabled]="ownerForm.invalid">{{ isUpdateMode ? 'Update' : 'Save' }}</button>
+      @if (isUpdateMode) {
+        <button type="button" (click)="deleteAccount()">Delete Account</button>
+      }
+    </div>
+  </form>
+</div>

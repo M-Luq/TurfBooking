@@ -1,0 +1,85 @@
+<div class="container search-container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Search by name or location..." [(ngModel)]="searchQuery" />
+                <button class="btn btn-success" type="button" (click)="searchTurfs()">Search</button>
+                <button class="btn btn-success" type="button" (click)="isFilter()">Filter</button>
+                <button class="btn btn-info" type="button" (click)="toggleFavorites()">
+                    {{ showFavorites ? 'Show All Turfs' : 'Show Favorites' }}
+                </button>
+            </div>
+            @if (filter) {
+                <div class="row">
+                    <div class="col-md-4">
+                        <select class="form-select" [(ngModel)]="sportType">
+                            <option value="">All Sports</option>
+                            <option value="Cricket">Cricket</option>
+                            <option value="Football">Football</option>
+                            <option value="Badminton">Badminton</option>
+                            <option value="Tennis">Tennis</option>
+                            <option value="BasketBall">BasketBall</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="number" class="form-control" placeholder="Min Price" [(ngModel)]="minPrice" />
+                    </div>
+                    <div class="col-md-4">
+                        <input type="number" class="form-control" placeholder="Max Price" [(ngModel)]="maxPrice" />
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col">
+                        <select class="form-select" [(ngModel)]="sortOption">
+                            <option value="">Sort By</option>
+                            <option value="priceAsc">Price (Low to High)</option>
+                            <option value="priceDesc">Price (High to Low)</option>
+                            <option value="nameAsc">Name (A-Z)</option>
+                            <option value="nameDesc">Name (Z-A)</option>
+                        </select>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="container turf-list-container">
+    @if (errorMessage) {
+        <div class="error-message">
+            {{ errorMessage }}
+        </div>
+    }
+
+    @if (isLoading) {
+        <div class="loading-message">
+            Loading turfs...
+        </div>
+    }
+
+    @if (!isLoading) {
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @for (turf of filteredTurfs; track turf.id) {
+                <div class="col">
+                    <div class="card h-100">
+                        @if (turf.imageUrl) {
+                            <img [src]="turf.imageUrl" class="card-img-top turf-image" alt="Turf Image" />
+                        }
+                        <div class="card-body">
+                            <div class="price-tag">
+                                {{ turf.pricePerHour | currency:"INR" }}/hour
+                            </div>
+                            <h5 class="card-title">{{ turf.name }}</h5>
+                            <p class="card-text">{{ turf.location }}</p>
+                            <p class="card-text">{{ turf.sportType }}</p>
+                            <button class="btn btn-primary" (click)="viewTurfDetails(turf)">View Details</button>
+                            <button class="btn btn-outline-danger favorite-button" (click)="toggleFavorite(turf)">
+                                <i class="fa-heart" [class.fa-regular]="!isFavorite(turf.id)" [class.fa-solid]="isFavorite(turf.id)"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

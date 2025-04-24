@@ -1,0 +1,101 @@
+<div class="container-fluid mt-3 d-flex justify-content-flex-start align-items-center">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title text-center fw-bold">Register</h2>
+          <form [formGroup]="registerForm" (ngSubmit)="register()">
+            <div class="mb-1">
+              <label for="username" class="form-label">Username</label>
+              <input type="text" class="form-control" id="username" placeholder="Enter your username" formControlName="name" required>
+              @if (registerForm.get('name')?.invalid && (registerForm.get('name')?.dirty || registerForm.get('name')?.touched)) {
+                <div class="text-danger">
+                  @if (registerForm.get('name')?.errors?.['required']) {
+                    Username is required.
+                  }
+                  @if (registerForm.get('name')?.errors?.['minlength']) {
+                    Username should have more than 3 characters
+                  }
+                </div>
+              }
+              @if (validationErrors['name']) {
+                <div class="text-danger">
+                  {{ validationErrors['name'] }}
+                </div>
+              }
+            </div>
+            <div class="mb-1">
+              <label for="email" class="form-label">Emai address</label>
+              <input type="email" class="form-control" id="email" placeholder="Enter your email" formControlName="email" required>
+              @if (registerForm.get('email')?.invalid && (registerForm.get('email')?.dirty || registerForm.get('email')?.touched)) {
+                <div class="text-danger">
+                  @if (registerForm.get('email')?.errors?.['required']) {
+                    Email is required.
+                  }
+                  @if (registerForm.get('email')?.errors?.['email']) {
+                    Invalid email format.
+                  }
+                </div>
+              }
+              @if (validationErrors['email']) {
+                <div class="text-danger">
+                  {{ validationErrors['email'] }}
+                </div>
+              }
+            </div>
+            <div class="mb-1">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="password" placeholder="Password" formControlName="password" required>
+              @if (registerForm.get('password')?.invalid && (registerForm.get('password')?.dirty || registerForm.get('password')?.touched)) {
+                <div class="text-danger">
+                  @if (registerForm.get('password')?.errors?.['required']) {
+                    Password is required.
+                  }
+                </div>
+              }
+              @if (validationErrors['password']) {
+                <div class="text-danger">
+                  {{ validationErrors['password'] }}
+                </div>
+              }
+            </div>
+            <div class="mb-3">
+              <label for="confirmPassword" class="form-label">Confirm Password</label>
+              <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password" formControlName="confirmPassword" required>
+              @if (registerForm.get('confirmPassword')?.invalid && (registerForm.get('confirmPassword')?.dirty || registerForm.get('confirmPassword')?.touched)) {
+                <div class="text-danger">
+                  @if (registerForm.get('confirmPassword')?.errors?.['required']) {
+                    Confirm Password is required.
+                  }
+                </div>
+              }
+              @if (registerForm.errors?.['passwordMismatch'] && (registerForm.get('confirmPassword')?.dirty || registerForm.get('confirmPassword')?.touched || registerForm.get('password')?.dirty || registerForm.get('password')?.touched)) {
+                <div class="text-danger">
+                  Passwords do not match.
+                </div>
+              }
+            </div>
+            <div class="mb-3">
+              <label for="roles" class="form-label">Role</label>
+              <select class="form-select" id="roles" formControlName="roles">
+                <option value="CUSTOMER">CUSTOMER</option>
+                <option value="TURFOWNER">TURFOWNER</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-success w-100" [disabled]="!registerForm.valid || isLoading">
+              @if(isLoading){
+              <span>Loading...</span>
+              }
+              @else{
+              <span>Register</span>
+              }
+            </button>
+            @if (message) {
+              <p class="mt-3 text-center text-danger">{{ message }}</p>
+            }
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

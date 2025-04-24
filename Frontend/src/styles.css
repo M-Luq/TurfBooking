@@ -1,0 +1,26 @@
+/* You can add global styles to this file, and also import other style files */
+/* Background for Login and Register pages */
+.auth-background {
+    background-image: url('/football.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed; 
+    height:100vh;
+    width:100%;
+  }
+
+  .turf-background {
+    background: linear-gradient(to bottom, #00530ef5, #000000); /* Green gradient */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    height: 100vh;
+    width: 100%;
+  }
+   
+  /* Background for other pages */
+  .default-background {
+    background-color: #f4f4f9; /* Light background color */
+  }

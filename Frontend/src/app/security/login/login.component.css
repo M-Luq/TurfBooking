@@ -1,0 +1,23 @@
+.card {
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 400px; /* Adjust width as needed */
+  }
+  
+  .card-body {
+    padding: 20px;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .btn-success {
+    background-color: #069f36;
+    border-color: #00d612;
+  }
+  
+  .btn-success:hover {
+    background-color: #008738;
+    border-color: #008728;
+  }

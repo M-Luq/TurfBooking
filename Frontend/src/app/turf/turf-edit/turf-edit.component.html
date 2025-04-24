@@ -1,0 +1,129 @@
+<div class="turf-edit-container">
+    <h2>Edit Turf</h2>
+
+    @if (backendErrors.length > 0) {
+        <div class="alert alert-danger">
+            @for (error of backendErrors; track $index) {
+                <p>{{ error }}</p>
+            }
+        </div>
+    }
+
+    <form #turfForm="ngForm" (ngSubmit)="onSubmit(turfForm)">
+        <div class="mt-3 text-center">
+            <img [src]="turf.imageUrl" alt="Turf Image" class="img-fluid rounded" style="max-height: 200px;"/>
+        </div>
+        <div class="form-group">
+            <label for="sportType">Sport Type</label>
+            <select id="sportType" name="sportType" [(ngModel)]="turf.sportType" required #sportType="ngModel" (change)="onSportTypeChange()">
+                <option value="" disabled selected>Select Sport Type</option>
+                @for (type of sportTypes; track type) {
+                    <option [value]="type">{{ type | titlecase }}</option>
+                }
+            </select>
+            @if (sportType.invalid && (sportType.dirty || sportType.touched)) {
+                <div class="text-danger">Sport Type is required.</div>
+            }
+        </div>
+
+        <div class="form-group">
+            <label for="name">Turf Name</label>
+            <input type="text" id="name" name="name" [(ngModel)]="turf.name" required #name="ngModel" />
+            @if (name.invalid && (name.dirty || name.touched)) {
+                <div class="text-danger">Turf Name is required.</div>
+            }
+        </div>
+
+        <div class="form-group">
+            <label for="location">Location</label>
+            <input type="text" id="location" name="location" [(ngModel)]="turf.location" required #location="ngModel" />
+            @if (location.invalid && (location.dirty || location.touched)) {
+                <div class="text-danger">Location is required.</div>
+            }
+        </div>
+
+        <div class="form-group">
+            <label for="pricePerHour">Price Per Hour</label>
+            <input type="number" id="pricePerHour" name="pricePerHour" [(ngModel)]="turf.pricePerHour" required min="0" #pricePerHour="ngModel" />
+            @if (pricePerHour.invalid && (pricePerHour.dirty || pricePerHour.touched)) {
+                <div class="text-danger">
+                    @if (pricePerHour.errors?.['required']) {
+                        <div>Price is required.</div>
+                    }
+                    @if (pricePerHour.errors?.['min']) {
+                        <div>Price must be greater than or equal to 0.</div>
+                    }
+                </div>
+            }
+        </div>
+
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" [(ngModel)]="turf.description"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="facilities">Facilities</label>
+            <input type="text" id="facilities" name="facilities" [(ngModel)]="turf.facilities" />
+        </div>
+
+        <div class="form-group">
+            <label for="capacity">Capacity</label>
+            <input type="number" id="capacity" name="capacity" [(ngModel)]="turf.capacity" min="8" #capacity="ngModel" />
+            @if (capacity.invalid && (capacity.dirty || capacity.touched)) {
+                <div class="text-danger">Capacity must be greater than or equal to 8.</div>
+            }
+        </div>
+
+        <div class="form-group">
+            <label for="openingTime">Opening Time (12-hour, e.g., 10:30 AM)</label>
+            <input type="text" id="openingTime" name="openingTime12" [(ngModel)]="openingTime12" (change)="convert12to24()" placeholder="10:30 AM" required pattern="^(0?[1-9]|1[012]):[0-5][0-9] (AM|PM)$" #openingTime12Input="ngModel" />
+            <p *ngIf="turf.openingTime">24-hour: {{ turf.openingTime }}</p>
+            @if (openingTime12Input.invalid && (openingTime12Input.dirty || openingTime12Input.touched)) {
+                <div class="text-danger">
+                    @if (openingTime12Input.errors?.['required']) {
+                        <div>Opening Time is required.</div>
+                    }
+                    @if (openingTime12Input.errors?.['pattern']) {
+                        <div>Invalid time format (e.g., 10:30 AM).</div>
+                    }
+                </div>
+            }
+        </div>
+        
+        <div class="form-group">
+            <label for="closingTime">Closing Time (12-hour, e.g., 08:00 PM)</label>
+            <input type="text" id="closingTime" name="closingTime12" [(ngModel)]="closingTime12" (change)="convert12to24()" placeholder="08:00 PM" required pattern="^(0?[1-9]|1[012]):[0-5][0-9] (AM|PM)$" #closingTime12Input="ngModel"/>
+            <p *ngIf="turf.closingTime">24-hour: {{ turf.closingTime }}</p>
+            @if (closingTime12Input.invalid && (closingTime12Input.dirty || closingTime12Input.touched)) {
+                <div class="text-danger">
+                    @if (closingTime12Input.errors?.['required']) {
+                        <div>Closing Time is required.</div>
+                    }
+                    @if (closingTime12Input.errors?.['pattern']) {
+                        <div>Invalid time format (e.g., 08:00 PM).</div>
+                    }
+                </div>
+            }
+        </div>
+
+        <div class="form-group">
+            <label for="surfaceType">Surface Type</label>
+            <input type="text" id="surfaceType" name="surfaceType" [(ngModel)]="turf.surfaceType" />
+        </div>
+
+        <div class="d-grid">
+            <button type="submit" class="btn btn-primary" [disabled]="isSubmitting || turfForm.invalid">
+                @if (isSubmitting) {
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    <span>Updating...</span>
+                } @else {
+                    <span>Update Turf</span>
+                }
+            </button>
+            <button type="button" class="btn btn-danger" (click)="deleteTurf()">
+                Delete Turf
+            </button>
+        </div>
+    </form>
+</div>

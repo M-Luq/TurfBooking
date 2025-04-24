@@ -1,0 +1,38 @@
+<div class="booking-create">
+  <h2>Booking Details</h2>
+
+  @if (isLoading) {
+    <div class="loading-message">
+      Loading...
+    </div>
+  }
+
+  @if (backendErrors.length > 0) {
+    <div class="error-message">
+      @for (error of backendErrors; track error) {
+        <p>{{ error }}</p>
+      }
+    </div>
+  }
+
+  @if (bookingDetails.length > 0 && !isLoading) {
+    @if (turf) {
+      <div class="turf-info">
+        <img [src]="turf.imageUrl" alt="{{ turf.name }}" class="turf-image" />
+        <h3>{{ turf.name }}</h3>
+      </div>
+    }
+    @for (booking of bookingDetails; track booking.id) {
+      <div class="booking-detail">
+        <p>Start Time: {{ formatTime(booking.startTime) }}</p>
+        <p>End Time: {{ formatTime(booking.endTime) }}</p>
+        <p>Status: {{ booking.status }}</p>
+        <p>Price: Rs {{ booking.turfPrice }}</p>
+      </div>
+    }
+
+    @if (paymentRequired) {
+      <button (click)="payNow()">Pay Now</button>
+    }
+  }
+</div>

@@ -1,0 +1,35 @@
+@if (turf) {
+  <div class="turf-details">
+    <div class="turf-details-content">
+      <h2>{{ turf.name }}</h2>
+      <img [src]="turf.imageUrl" alt="{{ turf.name }}" class="turf-image" />
+      <p>Location: {{ turf.location }}</p>
+      <p>Sport: {{ turf.sportType }}</p>
+      <p>Price: Rs{{ turf.pricePerHour }}/hour</p>
+      <p>Surface: {{ turf.surfaceType }}</p>
+      <p>Opening Time: {{  formatTime(turf.openingTime) }}</p>
+      <p>Closing Time: {{  formatTime(turf.closingTime) }}</p>
+
+      <h3>Available Slots</h3>
+      <div class="slot-boxes">
+        @for (slot of formatTimeSlots(availableSlots); track slot) {
+          <div
+            class="slot-box"
+            [class.selected]="selectedSlots.includes(slot)"
+            (click)="selectSlot(slot)"
+          >
+            {{ slot }}
+          </div>
+        }
+      </div>
+
+      <button (click)="bookTurf()" [disabled]="selectedSlots.length === 0">Book Turf</button>
+    </div>
+  </div>
+}
+
+@if (errorMessage) {
+  <div class="error-message">
+    {{ errorMessage }}
+  </div>
+}

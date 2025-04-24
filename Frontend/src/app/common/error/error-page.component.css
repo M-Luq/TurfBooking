@@ -1,0 +1,42 @@
+/* error-page.component.css */
+.error-page-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f4f4f4;
+    font-family: sans-serif;
+  }
+  
+  .error-content {
+    text-align: center;
+    padding: 40px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .error-content h1 {
+    color: #d32f2f;
+    margin-bottom: 20px;
+  }
+  
+  .error-message {
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 1.1em;
+  }
+  
+  .home-link {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #1976d2;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .home-link:hover {
+    background-color: #1565c0;
+  }

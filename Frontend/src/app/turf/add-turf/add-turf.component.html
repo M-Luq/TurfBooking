@@ -1,0 +1,144 @@
+<div class="turf-add-container">
+  <div class="photo-upload-section">
+    <div class="photo-box">
+      @if (imageUrl) {
+        <img [src]="imageUrl" alt="Turf Photo" class="preview-image" />
+      }
+    </div>
+  </div>
+
+  <div class="details-section">
+    @if (backendErrors.length > 0) {
+      <div class="error-box">
+        @for (error of backendErrors; track error) {
+          <p>{{ error }}</p>
+        }
+      </div>
+    }
+
+    <form #turfForm="ngForm" (ngSubmit)="onSubmit(turfForm)">
+      <div class="detail-field">
+        <label for="sportType">Sport Type</label>
+        <select id="sportType" name="sportType" [(ngModel)]="turf.sportType" required (change)="onSportTypeChange()">
+          <option value="" disabled selected>Select Sport Type</option>
+          @for (type of sportTypes; track type) {
+            <option [value]="type">{{ type | titlecase }}</option>
+          }
+        </select>
+        @if (turfForm.controls.hasOwnProperty('sportType') && turfForm.controls['sportType'].invalid && turfForm.controls['sportType'].touched) {
+          <div class="error-message">
+            @if (turfForm.controls['sportType'].errors?.['required']) {
+              <div>Sport Type is required.</div>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="detail-field">
+        <label for="name">Turf Name</label>
+        <input type="text" id="name" name="name" [(ngModel)]="turf.name" required />
+        @if (turfForm.controls.hasOwnProperty('name') && turfForm.controls['name'].invalid && turfForm.controls['name'].touched) {
+          <div class="error-message">
+            @if (turfForm.controls['name'].errors?.['required']) {
+              <div>Turf Name is required.</div>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="detail-field">
+        <label for="location">Location</label>
+        <input type="text" id="location" name="location" [(ngModel)]="turf.location" required />
+        @if (turfForm.controls.hasOwnProperty('location') && turfForm.controls['location'].invalid && turfForm.controls['location'].touched) {
+          <div class="error-message">
+            @if (turfForm.controls['location'].errors?.['required']) {
+              <div>Location is required.</div>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="detail-field">
+        <label for="pricePerHour">Price Per Hour</label>
+        <input type="number" id="pricePerHour" name="pricePerHour" [(ngModel)]="turf.pricePerHour" required min="0" />
+        @if (turfForm.controls.hasOwnProperty('pricePerHour') && turfForm.controls['pricePerHour'].invalid && turfForm.controls['pricePerHour'].touched) {
+          <div class="error-message">
+            @if (turfForm.controls['pricePerHour'].errors?.['required']) {
+              <div>Price is required.</div>
+            }
+            @if (turfForm.controls['pricePerHour'].errors?.['min']) {
+              <div>Price must be greater than or equal to 0.</div>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="detail-field">
+        <label for="description">Description</label>
+        <textarea id="description" name="description" [(ngModel)]="turf.description"></textarea>
+      </div>
+
+      <div class="detail-field">
+        <label for="facilities">Facilities</label>
+        <input type="text" id="facilities" name="facilities" [(ngModel)]="turf.facilities" />
+      </div>
+
+      <div class="detail-field">
+        <label for="capacity">Capacity</label>
+        <input type="number" id="capacity" name="capacity" [(ngModel)]="turf.capacity" min="8" />
+        @if (turfForm.controls.hasOwnProperty('capacity') && turfForm.controls['capacity'].invalid && turfForm.controls['capacity'].touched) {
+          <div class="error-message">
+            @if (turfForm.controls['capacity'].errors?.['min']) {
+              <div>Capacity must be greater than or equal to 8.</div>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="detail-field">
+        <label for="openingTime">Opening Time (12-hour, e.g., 10:30 AM)</label>
+        <input type="text" id="openingTime" name="openingTime12" [(ngModel)]="openingTime12" (change)="convert12to24()" placeholder="10:30 AM" required pattern="^(0?[1-9]|1[012]):[0-5][0-9] (AM|PM)$" #openingTime12Input="ngModel"/>
+        <p *ngIf="turf.openingTime">24-hour: {{ turf.openingTime }}</p>
+        @if (openingTime12Input.invalid && (openingTime12Input.dirty || openingTime12Input.touched)) {
+          <div class="error-message">
+            @if (openingTime12Input.errors?.['required']) {
+              <div>Opening Time is required.</div>
+            }
+            @if (openingTime12Input.errors?.['pattern']) {
+              <div>Invalid time format (e.g., 10:30 AM).</div>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="detail-field">
+        <label for="closingTime">Closing Time (12-hour, e.g., 08:00 PM)</label>
+        <input type="text" id="closingTime" name="closingTime12" [(ngModel)]="closingTime12" (change)="convert12to24()" placeholder="08:00 PM" required pattern="^(0?[1-9]|1[012]):[0-5][0-9] (AM|PM)$" #closingTime12Input="ngModel"/>
+        <p *ngIf="turf.closingTime">24-hour: {{ turf.closingTime }}</p>
+        @if (closingTime12Input.invalid && (closingTime12Input.dirty || closingTime12Input.touched)) {
+          <div class="error-message">
+            @if (closingTime12Input.errors?.['required']) {
+              <div>Closing Time is required.</div>
+            }
+            @if (closingTime12Input.errors?.['pattern']) {
+              <div>Invalid time format (e.g., 08:00 PM).</div>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="detail-field">
+        <label for="surfaceType">Surface Type</label>
+        <input type="text" id="surfaceType" name="surfaceType" [(ngModel)]="turf.surfaceType" />
+      </div>
+
+      <button type="submit" class="submit-button" [disabled]="isSubmitting || turfForm.invalid">
+        @if (isSubmitting) {
+          <span>Submitting...</span>
+        } @else {
+          <span>Add Turf</span>
+        }
+      </button>
+    </form>
+  </div>
+</div>

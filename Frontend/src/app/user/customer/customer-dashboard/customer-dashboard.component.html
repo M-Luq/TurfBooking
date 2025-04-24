@@ -1,0 +1,170 @@
+<div class="container customer-dashboard">
+    @if (!isCustomerRegistered) {
+        <div class="registration-prompt">
+            <p>Please complete your profile details to access the dashboard.</p>
+            <button (click)="navigateToCustomerDetails()" class="btn btn-primary">Complete Profile</button>
+        </div>
+    }
+
+    @if (isCustomerRegistered) {
+        <h2 class="dashboard-title">Welcome to Your Dashboard, {{ username }}!</h2>
+
+        <div class="dashboard-nav">
+            <button (click)="setActiveSection('bookings')" [class.active]="activeSection === 'bookings'" class="btn btn-nav">Bookings</button>
+            <button (click)="setActiveSection('payments')" [class.active]="activeSection === 'payments'" class="btn btn-nav">Payments</button>
+            <button (click)="setActiveSection('all')" [class.active]="activeSection === 'all'" class="btn btn-nav">All Bookings & Payments</button>
+        </div>
+
+        <div class="dashboard-content">
+            @if (activeSection === 'bookings') {
+                <h3 class="section-title">Your Recent Bookings</h3>
+                @if (cbookings.length > 0) {
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Turf</th>
+                                <th>Slot</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (item of cbookings; track item.booking.id) {
+                                <tr>
+                                    <td>{{ item.turf ? item.turf.name : 'N/A' }}</td>
+                                    <td>{{ formatTime(item.booking.startTime) }} - {{ formatTime(item.booking.endTime) }}</td>
+                                    <td>{{ item.booking.bookingDateTime | date:'mediumDate' }}</td>
+                                    <td>
+                                        <span [class]="item.booking.status === 'CONFIRMED' ? 'status-confirmed' : item.booking.status === 'PENDING' ? 'status-pending' : item.booking.status === 'CANCELLED' ? 'status-failed' : ''">{{ item.booking.status }}</span>
+                                    </td>
+                                    <td>
+                                        @if (item.booking.status === 'PENDING') {
+                                            <button (click)="payBooking(item.booking.id)" class="btn btn-success btn-sm">Pay</button>
+                                            <button (click)="cancelBooking(item.booking.id)" class="btn btn-danger btn-sm">Cancel</button>
+                                        } @else {
+                                            <span>No actions</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                } @else {
+                    <p>No bookings found.</p>
+                }
+            }
+
+            @if (activeSection === 'payments') {
+                <h3 class="section-title">Your Recent Payments</h3>
+                @if (payments.length > 0) {
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Payment ID</th>
+                                <th>Booking ID</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (payment of payments; track payment.id) {
+                                <tr>
+                                    <td>{{ payment.id }}</td>
+                                    <td>{{ payment.bookingId }}</td>
+                                    <td>Rs {{ payment.amount }}</td>
+                                    <td>{{ payment.paymentDate | date:'mediumDate' }}</td>
+                                    <td>
+                                        <span [class]="payment.status === 'PAID' ? 'status-success' : payment.status === 'REFUNDED' ? 'status-failed' : ''">{{ payment.status }}</span>
+                                    </td>
+                                    <td>
+                                        @if (payment.status === 'PAID' && isRefundable(payment.paymentDate)) {
+                                            <button (click)="refundPayment(payment.bookingId)" class="btn btn-warning btn-sm">Refund</button>
+                                        } @else if (payment.status === 'PAID' && !isRefundable(payment.paymentDate)){
+                                            <span>Refund time expired</span>
+                                        } @else {
+                                            <span>No actions</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                } @else {
+                    <p>No payments found.</p>
+                }
+            }
+
+            @if (activeSection === 'all') {
+                <h3 class="section-title">All Bookings and Payments</h3>
+                <div class="all-content">
+                    <div class="all-nav">
+                        <button (click)="setActiveAllSection('allBookings')" [class.active]="activeAllSection === 'allBookings'" class="btn btn-nav">All Bookings</button>
+                        <button (click)="setActiveAllSection('allPayments')" [class.active]="activeAllSection === 'allPayments'" class="btn btn-nav">All Payments</button>
+                    </div>
+
+                    @if (activeAllSection === 'allBookings') {
+                        <h4>Bookings</h4>
+                        @if (allBookings.length > 0) {
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Turf</th>
+                                        <th>Slot</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (booking of allBookings; track booking.booking.id) {
+                                        <tr>
+                                            <td>{{ booking.turf ? booking.turf.name : 'N/A' }}</td>
+                                            <td>{{ formatTime(booking.booking.startTime) }} - {{ formatTime(booking.booking.endTime) }}</td>
+                                            <td>{{ booking.booking.bookingDateTime| date:'mediumDate' }}</td>
+                                            <td><span [class]="booking.booking.status === 'CONFIRMED' ? 'status-confirmed' : booking.booking.status === 'PENDING' ? 'status-pending' : booking.booking.status === 'CANCELLED' ? 'status-failed':''">{{ booking.booking.status }}</span>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        } @else {
+                            <p>No bookings found.</p>
+                        }
+                    }
+
+                    @if (activeAllSection === 'allPayments') {
+                        <h4>Payments</h4>
+                        @if (allPayments.length > 0) {
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Payment ID</th>
+                                        <th>Booking ID</th>
+                                        <th>Amount</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (payment of allPayments; track payment.id) {
+                                        <tr>
+                                            <td>{{ payment.id }}</td>
+                                            <td>{{ payment.bookingId }}</td>
+                                            <td>Rs {{ payment.amount }}</td>
+                                            <td>{{ payment.paymentDate | date:'mediumDate' }}</td>
+                                            <td><span [class]="payment.status === 'PAID' ? 'status-success' : payment.status === 'REFUNDED' ? 'status-failed' : ''">{{ payment.status }}</span></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        } @else {
+                            <p>No payments found.</p>
+                        }
+                    }
+                </div>
+            }
+        </div>
+    }
+</div>

@@ -1,0 +1,32 @@
+<nav>
+  <div class="logo">
+    <img src="/ball.png" alt="Logo">
+    <span>PROTURF</span>
+  </div>
+  <div class="links">
+    @if (!isLoggedIn()) {
+      <a routerLink="/login" routerLinkActive="active">Login</a>
+      <a routerLink="/register" routerLinkActive="active">Register</a>
+      <button routerLink="/turf-list" routerLinkActive="active" class="book-turf-btn">Book Turf</button>
+    }
+    @if (isLoggedIn()) {
+      @if(getRolesFromToken()==='CUSTOMER'){
+      <a routerLink="/customer-dashboard" routerLinkActive="active">My Dashboard</a>
+      <button routerLink="/turf-list" routerLinkActive="active" class="book-turf-btn">Book Turf</button>
+      }
+      @else{
+        <a routerLink="/owner-dashboard" routerLinkActive="active">My Dashboard</a>
+      }
+      <div class="profile-dropdown">
+        <button class="profile-icon" (click)="toggleDropdown()">
+          <i class="fas fa-user-circle"></i>
+        </button>
+        <div class="dropdown-content" [class.show]="isDropdownOpen">
+          <a (click)="editProfile()">Edit Profile</a>
+          <a (click)="changeUsernamePassword()">Change Password</a>
+          <a routerLink="/" (click)="logout()">Logout</a>
+        </div>
+      </div>
+    }
+  </div>
+</nav>

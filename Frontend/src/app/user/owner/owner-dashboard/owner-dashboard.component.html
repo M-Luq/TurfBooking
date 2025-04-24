@@ -1,0 +1,210 @@
+<div class="container-fluid owner-dashboard py-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="dashboard-content">
+                @if (username) {
+                    <h2 class="dashboard-title mb-4">Welcome, {{ username }}!</h2>
+                }
+
+                <section class="turfs-section mb-4">
+                    <h3 class="section-title mb-3">Owned Turfs</h3>
+                    <div class="action-buttons mb-3">
+                        <button class="btn btn-outline-secondary" (click)="showAllBookings()">
+                            <i class="bi bi-calendar-event me-2"></i> All Bookings
+                        </button>
+                        <button class="btn btn-outline-success" (click)="showAllPayments()">
+                            <i class="bi bi-cash-coin me-2"></i> All Payments
+                        </button>
+                    </div>
+
+                    <div class="turf-grid">
+                        @for (turf of ownedTurfs; track turf.id) {
+                            <div class="turf-card" [class.selected]="selectedTurfIdForBookings === turf.id || selectedTurfIdForPayments === turf.id">
+                                @if (turf.imageUrl) {
+                                    <img [src]="turf.imageUrl" class="turf-image" alt="Turf Image" />
+                                }
+                                <div class="card-content">
+                                    <h5 class="turf-name">{{ turf.name }}</h5>
+                                    <p class="turf-location">{{ turf.location }}</p>
+                                    <div class="turf-actions">
+                                        <button class="btn btn-sm btn-primary" (click)="editTurf(turf.id)">
+                                            <i class="bi bi-pencil-square me-1"></i> Edit
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-info" (click)="showBookings(turf.id)">
+                                            <i class="bi bi-calendar-event me-1"></i> Bookings
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-success" (click)="showPayments(turf.id)">
+                                            <i class="bi bi-cash-coin me-1"></i> Payments
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        <div class="add-turf-card" (click)="addTurf()">
+                            <i class="fas fa-plus add-turf-icon"></i>
+                            <p>Add New Turf</p>
+                        </div>
+                    </div>
+                </section>
+                <section class="data-section mb-4" *ngIf="selectedTurfBookings.length > 0 || ownerBookings.length > 0 || selectedTurfIdForPayments || ownerPayments.length > 0">
+                    @if (selectedTurfBookings.length > 0) {
+                        <h3 class="section-title mb-3">Bookings for Turf ID: {{ selectedTurfIdForBookings }}</h3>
+                        <div class="text-center text-md-start">
+                            <button class="btn btn-secondary mb-3" (click)="hideTurfBookings()">
+                                <i class="bi bi-arrow-left me-1"></i> Hide Bookings
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Booking ID</th>
+                                        <th>Start Time</th>
+                                        <th>End Time</th>
+                                        <th>Booking Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (booking of selectedTurfBookings; track booking.id) {
+                                        <tr>
+                                            <td>{{ booking.id }}</td>
+                                            <td>{{ formatTime(booking.startTime) }}</td>
+                                            <td>{{ formatTime(booking.endTime) }}</td>
+                                            <td>{{ booking.bookingDateTime | date:'mediumDate' }}</td>
+                                            <td>
+                                                <span [class]="booking.status === 'CONFIRMED' ? 'status-confirmed' : booking.status === 'PENDING' ? 'status-pending' : booking.status === 'CANCELLED' ? 'status-cancelled' : booking.status === 'CANCELLEDNP' ? 'status-cancelled-no-payment' : ''">
+                                                    {{ booking.status === 'CANCELLEDNP' ? 'Cancelled without payment' : booking.status }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                            
+                        </div>
+                    }
+
+                    @if (ownerBookings.length > 0 && selectedTurfBookings.length === 0 && selectedTurfIdForBookings === null) {
+                        <h3 class="section-title mb-3">All Bookings for Owned Turfs</h3>
+                        <div class="text-center text-md-start">
+                            <button class="btn btn-secondary mb-3" (click)="ownerBookings = []">
+                                <i class="bi bi-arrow-left me-1"></i> Hide Bookings
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Booking ID</th>
+                                        <th>Turf ID</th>
+                                        <th>Start Time</th>
+                                        <th>End Time</th>
+                                        <th>Booking Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (booking of ownerBookings; track booking.id) {
+                                        <tr>
+                                            <td>{{ booking.id }}</td>
+                                            <td>{{ booking.turfId }}</td>
+                                            <td>{{ formatTime(booking.startTime) }}</td>
+                                            <td>{{ formatTime(booking.endTime) }}</td>
+                                            <td>{{ booking.bookingDateTime | date:'mediumDate' }}</td>
+                                            <td>
+                                                <span [class]="booking.status === 'CONFIRMED' ? 'status-confirmed' : booking.status === 'PENDING' ? 'status-pending' : booking.status === 'CANCELLED' ? 'status-cancelled' : booking.status === 'CANCELLEDNP' ? 'status-cancelled-no-payment' : ''">
+                                                    {{ booking.status === 'CANCELLEDNP' ? 'Cancelled without payment' : booking.status }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+
+                    @if (selectedTurfIdForPayments) {
+                        <h3 class="section-title mb-3">Payments for Turf ID: {{ selectedTurfIdForPayments }}</h3>
+                        <div class="text-center text-md-start">
+                            <button class="btn btn-secondary mb-3" (click)="selectedTurfIdForPayments = null">
+                                <i class="bi bi-arrow-left me-1"></i> Hide Payments
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                            @if (turfPayments.length > 0) {
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Payment ID</th>
+                                            <th>Booking ID</th>
+                                            <th>Amount</th>
+                                            <th>Payment Date</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (payment of turfPayments; track payment.id) {
+                                            <tr>
+                                                <td>{{ payment.id }}</td>
+                                                <td>{{ payment.bookingId }}</td>
+                                                <td>Rs {{ payment.amount }}</td>
+                                                <td>{{ payment.paymentDate | date:'mediumDate' }}</td>
+                                                <td>
+                                                    <span [class]="payment.status === 'PAID' ? 'status-success' : payment.status === 'REFUNDED' ? 'status-failed' : ''">{{ payment.status }}</span>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            } @else {
+                                <p class="text-center">No payments found for this turf.</p>
+                            }
+                        </div>
+                    }
+
+                    @if (ownerPayments.length > 0 && selectedTurfIdForPayments === null) {
+                        <h3 class="section-title mb-3">All Payments for Owned Turfs</h3>
+                        <div class="text-center text-md-start">
+                            <button class="btn btn-secondary mb-3" (click)="ownerPayments = []">
+                                <i class="bi bi-arrow-left me-1"></i> Hide Payments
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Payment ID</th>
+                                        <th>Booking ID</th>
+                                        <th>Turf ID</th>
+                                        <th>Amount</th>
+                                        <th>Payment Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (payment of ownerPayments; track payment.id) {
+                                        <tr>
+                                            <td>{{ payment.id }}</td>
+                                            <td>{{ payment.bookingId }}</td>
+                                            <td>{{ payment.turfId }}</td>
+                                            <td>Rs {{ payment.amount }}</td>
+                                            <td>{{ payment.paymentDate | date:'mediumDate' }}</td>
+                                            <td>
+                                                <span [class]="payment.status === 'PAID' ? 'status-success' : payment.status === 'REFUNDED' ? 'status-failed' : ''">{{ payment.status }}</span>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </section>
+
+                <section class="prompt-section mb-4" *ngIf="ownerBookings.length === 0 && selectedTurfBookings.length === 0 && selectedTurfIdForBookings === null && ownerPayments.length === 0 && selectedTurfIdForPayments === null">
+                    <p>Select a turf to view its bookings and payments, or use the buttons above to view all bookings and payments.</p>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
